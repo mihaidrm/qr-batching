@@ -171,32 +171,24 @@ async function copyQRToClipboard() {
 }
 
 function downloadQRImageAsPng() {
-  console.debug('Copying image to clipboard')
-  // Mihaita: aici bagi codes
-  var codes = ['https://google.com', 'https://google.com/test']
+  console.debug('Downloading image as PNG')
+  var codes = ['https://google.com/a', 'https://google.com/b']
+  var names = ['a.png', 'b.png']
 
-  async function downloadAndSetCode(code) {
+  async function downloadAndSetCode(code, name) {
     data.value = code
     await new Promise((resolve) => setTimeout(resolve, 2000))
     const qrCode = document.querySelector('#qr-code-container')
     if (qrCode) {
-      await downloadPngElement(qrCode, 'qr-code.png', options.value)
+      await downloadPngElement(qrCode, name, options.value)
     }
   }
 
   ;(async () => {
-    for (const code of codes) {
-      await downloadAndSetCode(code)
+    for (let i = 0; i < codes.length; i++) {
+      await downloadAndSetCode(codes[i], names[i])
     }
   })()
-}
-
-function downloadQRImageAsSvg() {
-  console.debug('Copying image to clipboard')
-  const qrCode = document.querySelector('#qr-code-container')
-  if (qrCode) {
-    downloadSvgElement(qrCode as HTMLElement, 'qr-code.svg', options.value)
-  }
 }
 
 function uploadImage() {
