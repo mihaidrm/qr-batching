@@ -51,11 +51,14 @@ export async function copyImageToClipboard(element: HTMLElement, options: Option
 
 export function downloadPngElement(element: HTMLElement, filename: string, options: Options) {
   const formattedOptions = getFormattedOptions(element, options)
-  domtoimage.toPng(element, formattedOptions).then((dataUrl: string) => {
-    const link = document.createElement('a')
-    link.href = dataUrl
-    link.download = filename
-    link.click()
+  return domtoimage.toPng(element, formattedOptions).then((dataUrl: string) => {
+    return new Promise((resolve) => {
+      const link = document.createElement('a')
+      link.href = dataUrl
+      link.download = filename
+      link.click()
+      resolve()
+    })
   })
 }
 

@@ -49,6 +49,7 @@ const cornersDotOptionsType = ref()
 const styleBorderRadius = ref()
 const styledBorderRadiusFormatted = computed(() => `${styleBorderRadius.value}px`)
 const styleBackground = ref(defaultPreset.style.background)
+styleBackground.value = '#00000000' //force transparent background - Mihaita
 
 const dotsOptions = computed(() => ({
   color: dotsOptionsColor.value,
@@ -128,7 +129,6 @@ watch(selectedPreset, () => {
   cornersDotOptionsColor.value = selectedPreset.value.cornersDotOptions.color
   cornersDotOptionsType.value = selectedPreset.value.cornersDotOptions.type
   styleBorderRadius.value = getNumericCSSValue(selectedPreset.value.style.borderRadius as string)
-  styleBackground.value = selectedPreset.value.style.background
 })
 
 const LAST_LOADED_LOCALLY_PRESET_KEY = 'Last saved locally'
@@ -172,10 +172,23 @@ async function copyQRToClipboard() {
 
 function downloadQRImageAsPng() {
   console.debug('Copying image to clipboard')
-  const qrCode = document.querySelector('#qr-code-container')
-  if (qrCode) {
-    downloadPngElement(qrCode as HTMLElement, 'qr-code.png', options.value)
+  // Mihaita: aici bagi codes
+  var codes = ['https://google.com', 'https://google.com/test']
+
+  async function downloadAndSetCode(code) {
+    data.value = code
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+    const qrCode = document.querySelector('#qr-code-container')
+    if (qrCode) {
+      await downloadPngElement(qrCode, 'qr-code.png', options.value)
+    }
   }
+
+  ;(async () => {
+    for (const code of codes) {
+      await downloadAndSetCode(code)
+    }
+  })()
 }
 
 function downloadQRImageAsSvg() {
