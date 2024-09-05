@@ -49,7 +49,7 @@ const cornersDotOptionsType = ref()
 const styleBorderRadius = ref()
 const styledBorderRadiusFormatted = computed(() => `${styleBorderRadius.value}px`)
 const styleBackground = ref(defaultPreset.style.background)
-styleBackground.value = '#00000000' //force transparent background - Mihaita
+styleBackground.value = '#000000000' //force transparent background - Mihaita
 
 const dotsOptions = computed(() => ({
   color: dotsOptionsColor.value,
@@ -70,6 +70,8 @@ const style = computed(() => ({
 const imageOptions = computed(() => ({
   margin: imageMargin.value
 }))
+
+margin.value = 0
 
 const qrCodeProps = computed(() => ({
   data: data.value,
@@ -172,8 +174,12 @@ async function copyQRToClipboard() {
 
 function downloadQRImageAsPng() {
   console.debug('Downloading image as PNG')
-  var codes = ['https://google.com/a', 'https://google.com/b']
-  var names = ['a.png', 'b.png']
+  var codes = [
+    'https://alerty.ro/1ah2dnfj',
+    'https://alerty.ro/2ah2dnfj',
+    'https://alerty.ro/3ah2dnfj'
+  ]
+  var names = ['1ah2dnfj.png', '2ah2dnfj.png', '3ah2dnfj.png']
 
   async function downloadAndSetCode(code, name) {
     data.value = code
@@ -181,6 +187,34 @@ function downloadQRImageAsPng() {
     const qrCode = document.querySelector('#qr-code-container')
     if (qrCode) {
       await downloadPngElement(qrCode, name, options.value)
+    }
+  }
+
+  ;(async () => {
+    for (let i = 0; i < codes.length; i++) {
+      await downloadAndSetCode(codes[i], names[i])
+    }
+  })()
+}
+
+import logoBase64 from '/logo.svg' // adjust path based on your folder structure
+
+function downloadQRImageAsSvg() {
+  console.debug('Downloading image as SVG')
+  var codes = ['https://alerty.ro/1ah2dnfj']
+  var names = ['1ah2dnfj.svg']
+
+  async function downloadAndSetCode(code, name) {
+    data.value = code
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+
+    const qrCode = document.querySelector('#qr-code-container')
+
+    if (qrCode) {
+      // Use the imported logo as the base64 string directly
+      image.value = logoBase64
+
+      await downloadSvgElement(qrCode, name, options.value)
     }
   }
 
